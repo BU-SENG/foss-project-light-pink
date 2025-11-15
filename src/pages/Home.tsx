@@ -128,7 +128,13 @@ export default function Home() {
         </p>
       </div>
 
-      {!user && (
+      {user ? (
+        <div className="glass border-green-500/30 bg-green-500/10">
+          <p className="text-green-300 text-center">
+            ✓ Signed in as <span className="font-semibold">{user.email}</span>. Your generation history will be saved automatically.
+          </p>
+        </div>
+      ) : (
         <div className="card border-white/20">
           <p className="text-gray-300 text-center">
             <button
@@ -157,27 +163,65 @@ export default function Home() {
             <FileUpload onFileSelect={handleFileSelect} />
           ) : (
             <>
+              {functions.length === 0 && (
+                <div className="card border-yellow-500/50 bg-yellow-500/10">
+                  <div className="flex items-start">
+                    <AlertCircle className="h-5 w-5 text-yellow-400 mr-3 mt-0.5" />
+                    <div>
+                      <p className="text-yellow-300 font-semibold mb-1">No functions or classes detected</p>
+                      <p className="text-yellow-200 text-sm">
+                        Make sure your file contains function definitions or class declarations. 
+                        For Python, use <code className="bg-black/30 px-1 rounded">def</code> or <code className="bg-black/30 px-1 rounded">class</code>. 
+                        For JavaScript, use <code className="bg-black/30 px-1 rounded">function</code>, <code className="bg-black/30 px-1 rounded">const</code>, or <code className="bg-black/30 px-1 rounded">class</code>.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="card">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-white">{file?.name || 'Code Editor'}</h2>
+                  <div className="flex items-center space-x-3">
+                    <h2 className="text-xl font-bold text-white">{file?.name || 'Code Editor'}</h2>
+                    <button
+                      onClick={() => {
+                        setFile(null)
+                        setCode('')
+                        setModifiedCode('')
+                        setFunctions([])
+                        setGeneratedDocstrings(new Map())
+                        setError(null)
+                      }}
+                      className="text-sm text-gray-400 hover:text-white hover:underline transition-colors"
+                      title="Remove file and upload another"
+                    >
+                      ✕ Remove
+                    </button>
+                  </div>
                   <div className="flex items-center space-x-4">
                     <select
                       value={docFormat}
                       onChange={(e) => setDocFormat(e.target.value as DocstringFormat)}
-                      className="px-3 py-2 border border-white/20 bg-white/5 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 text-white text-sm backdrop-blur-xl"
+                      className="px-4 py-2 border border-white/20 bg-black/50 backdrop-blur-xl rounded-lg focus:outline-none focus:ring-2 focus:ring-white/30 text-white text-sm hover:bg-white/5 transition-all cursor-pointer appearance-none pr-10"
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'right 0.75rem center',
+                        backgroundSize: '16px'
+                      }}
                     >
-                      <option value="google">Google Style</option>
-                      <option value="numpy">NumPy Style</option>
-                      <option value="sphinx">Sphinx Style</option>
-                      {language === 'javascript' && <option value="jsdoc">JSDoc</option>}
+                      <option value="google" className="bg-black text-white">Google Style</option>
+                      <option value="numpy" className="bg-black text-white">NumPy Style</option>
+                      <option value="sphinx" className="bg-black text-white">Sphinx Style</option>
+                      {language === 'javascript' && <option value="jsdoc" className="bg-black text-white">JSDoc</option>}
                     </select>
                     <button
                       onClick={handleGenerateDocstrings}
                       disabled={loading || functions.length === 0}
                       className="btn-primary flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                      title={functions.length === 0 ? 'No functions detected in the uploaded file' : 'Generate docstrings with AI'}
                     >
                       <Sparkles className="h-4 w-4 mr-2" />
-                      {loading ? 'Generating...' : 'Generate Docstrings'}
+                      {loading ? 'Generating...' : functions.length === 0 ? 'No Functions Found' : 'Generate Docstrings'}
                     </button>
                   </div>
                 </div>

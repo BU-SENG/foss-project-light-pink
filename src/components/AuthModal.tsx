@@ -25,10 +25,20 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     try {
       if (isSignUp) {
         await signUp(email, password)
+        // Show success message for sign up (email confirmation may be required)
+        setError('Success! Please check your email to confirm your account.')
+        setTimeout(() => {
+          onClose()
+          setEmail('')
+          setPassword('')
+        }, 3000)
       } else {
         await signIn(email, password)
+        // Close modal immediately on successful sign in
+        onClose()
+        setEmail('')
+        setPassword('')
       }
-      onClose()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
@@ -61,7 +71,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         </h2>
 
         {error && (
-          <div className="bg-red-500/20 border border-red-500/50 text-red-300 px-4 py-3 rounded mb-4">
+          <div className={`${error.includes('Success') ? 'bg-green-500/20 border-green-500/50 text-green-300' : 'bg-red-500/20 border-red-500/50 text-red-300'} border px-4 py-3 rounded mb-4`}>
             {error}
           </div>
         )}
