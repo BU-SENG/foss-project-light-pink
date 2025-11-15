@@ -121,21 +121,21 @@ export default function Home() {
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        <h1 className="text-4xl font-bold text-white mb-4">
           AI Docstring Generator
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400">
+        <p className="text-lg text-gray-300">
           Automatically generate professional docstrings for your Python and JavaScript code using
           Gemini 2.0 Pro
         </p>
       </div>
 
       {!user && (
-        <div className="card bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700">
-          <p className="text-blue-800 dark:text-blue-200 text-center">
+        <div className="card border-white/20">
+          <p className="text-gray-300 text-center">
             <button
               onClick={() => setShowAuthModal(true)}
-              className="font-semibold underline hover:text-blue-600"
+              className="font-semibold underline hover:text-white"
             >
               Sign in
             </button>{' '}
@@ -145,10 +145,10 @@ export default function Home() {
       )}
 
       {error && (
-        <div className="card bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700">
+        <div className="card border-red-500/50 bg-red-500/10">
           <div className="flex items-start">
-            <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mr-3 mt-0.5" />
-            <p className="text-red-800 dark:text-red-200">{error}</p>
+            <AlertCircle className="h-5 w-5 text-red-400 mr-3 mt-0.5" />
+            <p className="text-red-300">{error}</p>
           </div>
         </div>
       )}
@@ -161,14 +161,14 @@ export default function Home() {
             <>
               <div className="card">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  <h2 className="text-xl font-bold text-white">
                     {file?.name || 'Code Editor'}
                   </h2>
                   <div className="flex items-center space-x-4">
                     <select
                       value={docFormat}
                       onChange={(e) => setDocFormat(e.target.value as DocstringFormat)}
-                      className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white text-sm"
+                      className="px-3 py-2 border border-white/20 bg-white/5 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 text-white text-sm backdrop-blur-xl"
                     >
                       <option value="google">Google Style</option>
                       <option value="numpy">NumPy Style</option>

@@ -16,7 +16,7 @@ export default function CodeEditor({
   height = '500px',
 }: CodeEditorProps) {
   return (
-    <div className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+    <div className="border border-white/20 rounded-xl overflow-hidden bg-black/50 backdrop-blur-xl">
       <Editor
         height={height}
         language={language}

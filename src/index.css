@@ -7,9 +7,9 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.95);
+  background-color: #000000;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -23,23 +23,58 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background: #000000;
 }
 
 #root {
   width: 100%;
   margin: 0 auto;
+  background: #000000;
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-white text-black hover:bg-gray-200 font-semibold py-2 px-4 rounded-lg transition-all duration-200 border border-white/20;
   }
   
   .btn-secondary {
-    @apply bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-black text-white hover:bg-gray-900 font-semibold py-2 px-4 rounded-lg transition-all duration-200 border border-white/20;
   }
   
   .card {
-    @apply bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6;
+    @apply bg-white/5 backdrop-blur-xl rounded-xl shadow-2xl p-6 border border-white/10;
   }
+  
+  .glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl;
+  }
+  
+  .glass-hover {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl hover:bg-white/10 hover:border-white/20 transition-all duration-300;
+  }
+}
+
+/* Glassmorphism utilities */
+.backdrop-blur-glass {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
