@@ -78,12 +78,8 @@ export default function History() {
           <div className="p-6 rounded-full bg-white/5 border border-white/10 mb-6 inline-block">
             <HistoryIcon className="h-16 w-16 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-4">
-            Sign In Required
-          </h1>
-          <p className="text-gray-300">
-            Please sign in to view your generation history.
-          </p>
+          <h1 className="text-2xl font-bold text-white mb-4">Sign In Required</h1>
+          <p className="text-gray-300">Please sign in to view your generation history.</p>
         </div>
       </div>
     )
@@ -140,9 +136,7 @@ export default function History() {
           <div key={item.id} className="glass glass-hover transition-all">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-white">
-                  {item.filename}
-                </h3>
+                <h3 className="text-lg font-semibold text-white">{item.filename}</h3>
                 <div className="flex items-center space-x-4 mt-2 text-sm text-gray-300">
                   <span className="flex items-center">
                     <Calendar className="h-4 w-4 mr-1" />
@@ -192,9 +186,7 @@ export default function History() {
           <div className="glass max-w-6xl w-full max-h-[90vh] overflow-hidden">
             <div className="p-6 border-b border-white/10">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-white">
-                  {selectedItem.filename}
-                </h2>
+                <h2 className="text-2xl font-bold text-white">{selectedItem.filename}</h2>
                 <button
                   onClick={() => setShowModal(false)}
                   className="text-gray-300 hover:text-white transition-colors text-2xl font-light"
@@ -206,9 +198,7 @@ export default function History() {
             <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-3">
-                    Before
-                  </h3>
+                  <h3 className="text-lg font-semibold text-white mb-3">Before</h3>
                   <CodeEditor
                     value={selectedItem.content_before}
                     language={selectedItem.language as 'python' | 'javascript'}
@@ -217,9 +207,7 @@ export default function History() {
                   />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-3">
-                    After
-                  </h3>
+                  <h3 className="text-lg font-semibold text-white mb-3">After</h3>
                   <CodeEditor
                     value={selectedItem.content_after}
                     language={selectedItem.language as 'python' | 'javascript'}

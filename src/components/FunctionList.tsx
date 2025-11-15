@@ -19,9 +19,7 @@ export default function FunctionList({ functions, generatedDocstrings }: Functio
 
   return (
     <div className="card">
-      <h2 className="text-xl font-bold text-white mb-4">
-        Detected Functions & Classes
-      </h2>
+      <h2 className="text-xl font-bold text-white mb-4">Detected Functions & Classes</h2>
       <div className="space-y-3">
         {functions.map((func, index) => {
           const hasDocstring = generatedDocstrings.has(func.name)
@@ -39,9 +37,7 @@ export default function FunctionList({ functions, generatedDocstrings }: Functio
                   ) : (
                     <Circle className="h-5 w-5 text-gray-500" />
                   )}
-                  <span className="font-mono text-sm font-medium text-white">
-                    {func.name}
-                  </span>
+                  <span className="font-mono text-sm font-medium text-white">{func.name}</span>
                   <span className="text-xs text-gray-400 px-2 py-1 bg-white/10 border border-white/20 rounded">
                     {func.type}
                   </span>
@@ -52,14 +48,10 @@ export default function FunctionList({ functions, generatedDocstrings }: Functio
                   </p>
                 )}
                 {hadDocstring && !hasDocstring && (
-                  <p className="text-xs text-yellow-400 mt-1 ml-7">
-                    ⚠️ Has existing docstring
-                  </p>
+                  <p className="text-xs text-yellow-400 mt-1 ml-7">⚠️ Has existing docstring</p>
                 )}
                 {hasDocstring && (
-                  <p className="text-xs text-green-400 mt-1 ml-7">
-                    ✓ Docstring generated
-                  </p>
+                  <p className="text-xs text-green-400 mt-1 ml-7">✓ Docstring generated</p>
                 )}
               </div>
               <div className="text-xs text-gray-500">

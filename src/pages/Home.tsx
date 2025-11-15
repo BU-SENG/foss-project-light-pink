@@ -121,9 +121,7 @@ export default function Home() {
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-white mb-4">
-          AI Docstring Generator
-        </h1>
+        <h1 className="text-4xl font-bold text-white mb-4">AI Docstring Generator</h1>
         <p className="text-lg text-gray-300">
           Automatically generate professional docstrings for your Python and JavaScript code using
           Gemini 2.0 Pro
@@ -161,9 +159,7 @@ export default function Home() {
             <>
               <div className="card">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-white">
-                    {file?.name || 'Code Editor'}
-                  </h2>
+                  <h2 className="text-xl font-bold text-white">{file?.name || 'Code Editor'}</h2>
                   <div className="flex items-center space-x-4">
                     <select
                       value={docFormat}

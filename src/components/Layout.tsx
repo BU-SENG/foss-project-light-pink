@@ -50,9 +50,7 @@ export default function Layout() {
               {user ? (
                 <div className="flex items-center space-x-3">
                   <div className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-                    <span className="text-sm text-gray-300">
-                      {user.email}
-                    </span>
+                    <span className="text-sm text-gray-300">{user.email}</span>
                   </div>
                   <button
                     onClick={() => signOut()}

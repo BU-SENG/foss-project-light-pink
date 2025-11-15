@@ -111,9 +111,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <div className="w-full border-t border-white/20"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-black text-gray-400">
-                Or continue with
-              </span>
+              <span className="px-2 bg-black text-gray-400">Or continue with</span>
             </div>
           </div>
 
@@ -146,10 +144,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           </button>
         </div>
 
-        <button
-          onClick={onClose}
-          className="mt-4 w-full text-sm text-gray-400 hover:text-white"
-        >
+        <button onClick={onClose} className="mt-4 w-full text-sm text-gray-400 hover:text-white">
           Close
         </button>
       </div>

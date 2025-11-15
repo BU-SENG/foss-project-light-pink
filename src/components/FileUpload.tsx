@@ -63,12 +63,8 @@ export default function FileUpload({ onFileSelect, accept = '.py,.js,.ts' }: Fil
           <div className="p-6 rounded-full bg-white/5 border border-white/10 mb-6">
             <Upload className="h-16 w-16 text-white" />
           </div>
-          <p className="text-2xl font-semibold text-white mb-3">
-            Upload Your Code
-          </p>
-          <p className="text-base text-gray-300 mb-2">
-            Drop your file here or click to browse
-          </p>
+          <p className="text-2xl font-semibold text-white mb-3">Upload Your Code</p>
+          <p className="text-base text-gray-300 mb-2">Drop your file here or click to browse</p>
           <p className="text-sm text-gray-400">
             Supports Python (.py) and JavaScript (.js, .ts) files
           </p>
