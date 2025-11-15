@@ -5,10 +5,12 @@ Get up and running with AI Docstring Generator in 5 minutes!
 ## 🚀 Super Quick Setup (Local Development)
 
 ### 1. Prerequisites
+
 - Node.js 18+ ([download](https://nodejs.org/))
 - A code editor (VS Code recommended)
 
 ### 2. Clone & Install
+
 ```bash
 git clone https://github.com/BU-SENG/foss-project-light-pink.git
 cd foss-project-light-pink
@@ -18,10 +20,12 @@ npm install
 ### 3. Environment Setup
 
 **Option A: Use Without Backend (Limited Features)**
+
 ```bash
 # Just start the dev server - no Supabase needed!
 npm run dev
 ```
+
 - File upload ✅
 - Function detection ✅
 - Code preview ✅
@@ -31,42 +35,48 @@ npm run dev
 **Option B: Full Setup with Supabase (5 minutes)**
 
 1. **Get Supabase credentials** (free tier):
+
    - Visit [supabase.com](https://supabase.com)
    - Create a new project
    - Copy Project URL and anon key
 
 2. **Configure environment**:
+
    ```bash
    cp .env.example .env
    ```
-   
+
    Edit `.env`:
+
    ```env
    VITE_SUPABASE_URL=https://xxxxx.supabase.co
    VITE_SUPABASE_ANON_KEY=eyJxxxxx...
    ```
 
 3. **Set up database**:
+
    - Go to SQL Editor in Supabase
    - Run: `supabase/migrations/20240101000000_create_docgen_history.sql`
 
 4. **Deploy Edge Function**:
+
    ```bash
    # Install Supabase CLI
    npm install -g supabase
-   
+
    # Login and link
    supabase login
    supabase link --project-ref YOUR_PROJECT_REF
-   
+
    # Set Gemini API key (get from https://makersuite.google.com/app/apikey)
    supabase secrets set GEMINI_API_KEY=your_key_here
-   
+
    # Deploy
    supabase functions deploy generate-docstring
    ```
 
 5. **Start dev server**:
+
    ```bash
    npm run dev
    ```
@@ -78,6 +88,7 @@ npm run dev
 ### Test It Out
 
 1. **Create a test file** (`test.py`):
+
 ```python
 def add(a, b):
     return a + b
@@ -92,15 +103,16 @@ class Calculator:
 4. **Download** the documented code!
 
 ### Result:
+
 ```python
 def add(a, b):
     """
     Adds two numbers together.
-    
+
     Args:
         a: The first number
         b: The second number
-    
+
     Returns:
         The sum of a and b
     """
@@ -110,6 +122,7 @@ def add(a, b):
 ## 📋 Common Issues & Solutions
 
 ### "Cannot find module errors"
+
 ```bash
 # Delete node_modules and reinstall
 rm -rf node_modules package-lock.json
@@ -117,16 +130,19 @@ npm install
 ```
 
 ### "Supabase connection error"
+
 - Check `.env` file exists and has correct values
 - Verify Supabase project is active
 - Check browser console for specific errors
 
 ### "Edge function not found"
+
 - Ensure edge function is deployed: `supabase functions list`
 - Check function logs: `supabase functions logs generate-docstring`
 - Verify GEMINI_API_KEY is set: `supabase secrets list`
 
 ### Port 5173 already in use
+
 ```bash
 # Use a different port
 npm run dev -- --port 3000

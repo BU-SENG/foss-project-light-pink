@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { User, Session, AuthError } from '@supabase/supabase-js'
+import { User, Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 
 interface AuthContextType {
@@ -21,6 +21,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Skip auth setup if Supabase is not configured
+    if (!supabase) {
+      setLoading(false)
+      return
+    }
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
@@ -41,21 +47,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const signIn = async (email: string, password: string) => {
+    if (!supabase) throw new Error('Supabase not configured')
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
   }
 
   const signUp = async (email: string, password: string) => {
+    if (!supabase) throw new Error('Supabase not configured')
     const { error } = await supabase.auth.signUp({ email, password })
     if (error) throw error
   }
 
   const signOut = async () => {
+    if (!supabase) throw new Error('Supabase not configured')
     const { error } = await supabase.auth.signOut()
     if (error) throw error
   }
 
   const signInWithGithub = async () => {
+    if (!supabase) throw new Error('Supabase not configured')
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
     })
@@ -63,6 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signInWithGoogle = async () => {
+    if (!supabase) throw new Error('Supabase not configured')
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
     })
