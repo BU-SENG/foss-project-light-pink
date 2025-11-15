@@ -67,6 +67,7 @@ foss-project-light-pink/
 ## ✨ Features Implemented
 
 ### Core Functionality ✅
+
 - [x] File upload (drag & drop + browse)
 - [x] Python code parser (functions, classes, methods)
 - [x] JavaScript code parser (functions, arrow functions, classes)
@@ -77,6 +78,7 @@ foss-project-light-pink/
 - [x] Automatic function detection
 
 ### User Features ✅
+
 - [x] Supabase authentication
 - [x] Email login
 - [x] GitHub OAuth (optional)
@@ -88,6 +90,7 @@ foss-project-light-pink/
 - [x] Dark mode support
 
 ### Technical Features ✅
+
 - [x] TypeScript for type safety
 - [x] React 18 with hooks
 - [x] Vite build system
@@ -104,40 +107,45 @@ foss-project-light-pink/
 ## 🛠️ Tech Stack
 
 ### Frontend
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| React | 18.2 | UI framework |
-| TypeScript | 5.3 | Type safety |
-| Vite | 5.0 | Build tool |
-| TailwindCSS | 3.4 | Styling |
-| React Router | 6.21 | Navigation |
-| Monaco Editor | 4.6 | Code editor |
-| Lucide Icons | Latest | Icons |
+
+| Technology    | Version | Purpose      |
+| ------------- | ------- | ------------ |
+| React         | 18.2    | UI framework |
+| TypeScript    | 5.3     | Type safety  |
+| Vite          | 5.0     | Build tool   |
+| TailwindCSS   | 3.4     | Styling      |
+| React Router  | 6.21    | Navigation   |
+| Monaco Editor | 4.6     | Code editor  |
+| Lucide Icons  | Latest  | Icons        |
 
 ### Backend
-| Technology | Purpose |
-|------------|---------|
-| Supabase | Backend platform |
-| PostgreSQL | Database |
-| Deno | Edge Functions runtime |
-| Gemini 2.0 Pro | AI model |
+
+| Technology     | Purpose                |
+| -------------- | ---------------------- |
+| Supabase       | Backend platform       |
+| PostgreSQL     | Database               |
+| Deno           | Edge Functions runtime |
+| Gemini 2.0 Pro | AI model               |
 
 ---
 
 ## 📋 Next Steps to Use
 
 ### 1. Install Dependencies
+
 ```bash
 npm install
 ```
 
 ### 2. Set Up Environment
+
 ```bash
 cp .env.example .env
 # Edit .env with your Supabase credentials
 ```
 
 ### 3. Set Up Supabase (Detailed in SUPABASE_SETUP.md)
+
 ```bash
 # Create Supabase project
 # Run database migrations
@@ -146,11 +154,13 @@ cp .env.example .env
 ```
 
 ### 4. Start Development Server
+
 ```bash
 npm run dev
 ```
 
 ### 5. Build for Production
+
 ```bash
 npm run build
 npm run preview
@@ -197,11 +207,13 @@ npm run preview
 ## 🚀 Deployment Options
 
 ### Frontend
+
 - **Vercel** (recommended): `vercel deploy`
 - **Netlify**: `netlify deploy`
 - **GitHub Pages**: Push `dist/` folder
 
 ### Backend
+
 - Already deployed on Supabase
 - Edge Functions are serverless
 - Database is managed
@@ -244,6 +256,7 @@ If you want to understand the code better:
 ## 🗺️ Future Enhancements
 
 Potential features to add:
+
 - [ ] TypeScript-specific parsing
 - [ ] Batch file processing
 - [ ] VS Code extension
@@ -277,6 +290,7 @@ Potential features to add:
 Your AI Docstring Generator is complete and ready to use!
 
 ### Quick Test:
+
 1. `npm install`
 2. `npm run dev`
 3. Upload a `.py` file
@@ -284,6 +298,7 @@ Your AI Docstring Generator is complete and ready to use!
 5. (Setup Supabase to enable generation)
 
 ### Questions?
+
 - Read **QUICKSTART.md** for 5-minute setup
 - Check **SUPABASE_SETUP.md** for backend details
 - See **README.md** for full documentation
@@ -293,4 +308,4 @@ Your AI Docstring Generator is complete and ready to use!
 
 **Built with ❤️ using modern web technologies**
 
-*Ready to generate some awesome docstrings!* 🚀
+_Ready to generate some awesome docstrings!_ 🚀
