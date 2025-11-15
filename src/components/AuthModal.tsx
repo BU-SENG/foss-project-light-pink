@@ -71,7 +71,13 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         </h2>
 
         {error && (
-          <div className={`${error.includes('Success') ? 'bg-green-500/20 border-green-500/50 text-green-300' : 'bg-red-500/20 border-red-500/50 text-red-300'} border px-4 py-3 rounded mb-4`}>
+          <div
+            className={`${
+              error.includes('Success')
+                ? 'bg-green-500/20 border-green-500/50 text-green-300'
+                : 'bg-red-500/20 border-red-500/50 text-red-300'
+            } border px-4 py-3 rounded mb-4`}
+          >
             {error}
           </div>
         )}

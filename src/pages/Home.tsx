@@ -4,9 +4,10 @@ import FileUpload from '@/components/FileUpload'
 import CodeEditor from '@/components/CodeEditor'
 import FunctionList from '@/components/FunctionList'
 import AuthModal from '@/components/AuthModal'
+import HistorySidebar from '@/components/HistorySidebar'
 import { parsePythonCode, parseJavaScriptCode, insertDocstrings } from '@/utils/codeParser'
 import { generateDocstrings, saveToHistory } from '@/services/api'
-import { FunctionMetadata, Language, DocstringFormat } from '@/types'
+import { FunctionMetadata, Language, DocstringFormat, DocgenHistory } from '@/types'
 import { Download, Sparkles, AlertCircle } from 'lucide-react'
 
 export default function Home() {
@@ -131,7 +132,8 @@ export default function Home() {
       {user ? (
         <div className="glass border-green-500/30 bg-green-500/10">
           <p className="text-green-300 text-center">
-            ✓ Signed in as <span className="font-semibold">{user.email}</span>. Your generation history will be saved automatically.
+            ✓ Signed in as <span className="font-semibold">{user.email}</span>. Your generation
+            history will be saved automatically.
           </p>
         </div>
       ) : (
@@ -168,11 +170,16 @@ export default function Home() {
                   <div className="flex items-start">
                     <AlertCircle className="h-5 w-5 text-yellow-400 mr-3 mt-0.5" />
                     <div>
-                      <p className="text-yellow-300 font-semibold mb-1">No functions or classes detected</p>
+                      <p className="text-yellow-300 font-semibold mb-1">
+                        No functions or classes detected
+                      </p>
                       <p className="text-yellow-200 text-sm">
-                        Make sure your file contains function definitions or class declarations. 
-                        For Python, use <code className="bg-black/30 px-1 rounded">def</code> or <code className="bg-black/30 px-1 rounded">class</code>. 
-                        For JavaScript, use <code className="bg-black/30 px-1 rounded">function</code>, <code className="bg-black/30 px-1 rounded">const</code>, or <code className="bg-black/30 px-1 rounded">class</code>.
+                        Make sure your file contains function definitions or class declarations. For
+                        Python, use <code className="bg-black/30 px-1 rounded">def</code> or{' '}
+                        <code className="bg-black/30 px-1 rounded">class</code>. For JavaScript, use{' '}
+                        <code className="bg-black/30 px-1 rounded">function</code>,{' '}
+                        <code className="bg-black/30 px-1 rounded">const</code>, or{' '}
+                        <code className="bg-black/30 px-1 rounded">class</code>.
                       </p>
                     </div>
                   </div>
@@ -206,22 +213,40 @@ export default function Home() {
                         backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'right 0.75rem center',
-                        backgroundSize: '16px'
+                        backgroundSize: '16px',
                       }}
                     >
-                      <option value="google" className="bg-black text-white">Google Style</option>
-                      <option value="numpy" className="bg-black text-white">NumPy Style</option>
-                      <option value="sphinx" className="bg-black text-white">Sphinx Style</option>
-                      {language === 'javascript' && <option value="jsdoc" className="bg-black text-white">JSDoc</option>}
+                      <option value="google" className="bg-black text-white">
+                        Google Style
+                      </option>
+                      <option value="numpy" className="bg-black text-white">
+                        NumPy Style
+                      </option>
+                      <option value="sphinx" className="bg-black text-white">
+                        Sphinx Style
+                      </option>
+                      {language === 'javascript' && (
+                        <option value="jsdoc" className="bg-black text-white">
+                          JSDoc
+                        </option>
+                      )}
                     </select>
                     <button
                       onClick={handleGenerateDocstrings}
                       disabled={loading || functions.length === 0}
                       className="btn-primary flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
-                      title={functions.length === 0 ? 'No functions detected in the uploaded file' : 'Generate docstrings with AI'}
+                      title={
+                        functions.length === 0
+                          ? 'No functions detected in the uploaded file'
+                          : 'Generate docstrings with AI'
+                      }
                     >
                       <Sparkles className="h-4 w-4 mr-2" />
-                      {loading ? 'Generating...' : functions.length === 0 ? 'No Functions Found' : 'Generate Docstrings'}
+                      {loading
+                        ? 'Generating...'
+                        : functions.length === 0
+                        ? 'No Functions Found'
+                        : 'Generate Docstrings'}
                     </button>
                   </div>
                 </div>
@@ -247,6 +272,22 @@ export default function Home() {
 
         <div className="space-y-6">
           <FunctionList functions={functions} generatedDocstrings={generatedDocstrings} />
+          <HistorySidebar
+            onSelectHistory={(item: DocgenHistory) => {
+              // Load history item into editor
+              setFile(new File([item.content_before], item.filename))
+              setCode(item.content_before)
+              setModifiedCode(item.content_after)
+              setLanguage(item.language as Language)
+              
+              // Parse functions from the loaded code
+              const parsedFunctions =
+                item.language === 'python'
+                  ? parsePythonCode(item.content_before)
+                  : parseJavaScriptCode(item.content_before)
+              setFunctions(parsedFunctions)
+            }}
+          />
         </div>
       </div>
 

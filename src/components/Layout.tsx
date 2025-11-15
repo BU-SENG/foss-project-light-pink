@@ -1,12 +1,11 @@
-import { Outlet, Link, useNavigate } from 'react-router-dom'
+import { Outlet, Link } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
-import { FileCode2, History, LogOut, LogIn } from 'lucide-react'
+import { FileCode2, LogOut, LogIn } from 'lucide-react'
 import { useState } from 'react'
 import AuthModal from './AuthModal'
 
 export default function Layout() {
   const { user, signOut } = useAuth()
-  const navigate = useNavigate()
   const [showAuthModal, setShowAuthModal] = useState(false)
 
   const handleSignInClick = () => {
@@ -28,23 +27,6 @@ export default function Layout() {
                 </div>
                 <span className="font-bold text-lg">AI Docstring Generator</span>
               </Link>
-              <div className="ml-8 flex space-x-2 items-center">
-                <Link
-                  to="/"
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all"
-                >
-                  Home
-                </Link>
-                {user && (
-                  <Link
-                    to="/history"
-                    className="px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center"
-                  >
-                    <History className="h-4 w-4 mr-2" />
-                    History
-                  </Link>
-                )}
-              </div>
             </div>
             <div className="flex items-center">
               {user ? (
