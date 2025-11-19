@@ -1,26 +1,27 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
         primary: {
-          50: '#ffffff',
-          100: '#f5f5f5',
-          200: '#e5e5e5',
-          300: '#d4d4d4',
-          400: '#a3a3a3',
-          500: '#737373',
-          600: '#525252',
-          700: '#404040',
-          800: '#262626',
-          900: '#171717',
+          50: "#ffe4e6",
+          100: "#fecdd3",
+          200: "#fda4af",
+          300: "#fb7185",
+          400: "#f43f5e",
+          500: "#e11d48",
+          600: "#be123c",
+          700: "#9f1239",
+          800: "#881337",
+          900: "#701a3a",
         },
       },
-      backdropBlur: {
-        glass: '16px',
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        serif: ["Merriweather", "serif"],
       },
     },
   },
   plugins: [],
-}
+};

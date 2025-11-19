@@ -1,107 +1,171 @@
-import { createContext, useContext, useEffect, useState } from 'react'
-import { User, Session } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
+import React, { createContext, useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/lib/supabase';
+import type { User } from '@/types';
 
-interface AuthContextType {
-  user: User | null
-  session: Session | null
-  loading: boolean
-  signIn: (email: string, password: string) => Promise<void>
-  signUp: (email: string, password: string) => Promise<void>
-  signOut: () => Promise<void>
-  signInWithGithub: () => Promise<void>
-  signInWithGoogle: () => Promise<void>
+export type SignupCredentials = { email: string; password: string; confirmPassword?: string };
+export type LoginCredentials = { email: string; password: string; remember?: boolean };
+export type AuthError = { message: string; code?: string | null; status?: number | null };
+
+export interface AuthContextValue {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  signup: (creds: SignupCredentials) => Promise<User>;
+  login: (creds: LoginCredentials) => Promise<User>;
+  logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const isAuthenticated = !!user;
+
+  const mapSupabaseUser = useCallback((u: any): User | null => {
+    if (!u) return null;
+    return {
+      id: u.id,
+      email: u.email || null,
+      user_metadata: u.user_metadata || {},
+    } as unknown as User;
+  }, []);
 
   useEffect(() => {
-    // Skip auth setup if Supabase is not configured
-    if (!supabase) {
-      setLoading(false)
-      return
+    let mounted = true;
+    (async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        const sessionUser = data?.session?.user ?? null;
+        if (mounted) setUser(mapSupabaseUser(sessionUser));
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to get supabase session', err);
+      } finally {
+        if (mounted) setIsLoading(false);
+      }
+    })();
+
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      // handle session changes
+      const nextUser = session?.user ?? null;
+      setUser(mapSupabaseUser(nextUser));
+      if (event === 'SIGNED_OUT') {
+        // clear and optionally navigate home
+        setUser(null);
+        navigate('/');
+      }
+    });
+
+    return () => {
+      mounted = false;
+      listener?.subscription.unsubscribe();
+    };
+  }, [mapSupabaseUser, navigate]);
+
+  const signup = async (creds: SignupCredentials): Promise<User> => {
+    setIsLoading(true);
+    try {
+      if (creds.password !== creds.confirmPassword) {
+        throw { message: 'Passwords do not match', code: 'PASSWORD_MISMATCH' } as AuthError;
+      }
+      const { data, error } = await supabase.auth.signUp({ email: creds.email, password: creds.password });
+      if (error) {
+        // map common errors
+        const friendly: AuthError = mapSupabaseError(error);
+        throw friendly;
+      }
+      const u = data?.user ?? null;
+      setUser(mapSupabaseUser(u));
+      return mapSupabaseUser(u) as User;
+    } catch (err: any) {
+      // eslint-disable-next-line no-console
+      if (process.env.NODE_ENV !== 'production') console.error('Signup error', err);
+      throw err;
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+  const login = async (creds: LoginCredentials): Promise<User> => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email: creds.email, password: creds.password });
+      if (error) {
+        throw mapSupabaseError(error);
+      }
+      const u = data?.user ?? null;
+      setUser(mapSupabaseUser(u));
+      return mapSupabaseUser(u) as User;
+    } catch (err: any) {
+      if (process.env.NODE_ENV !== 'production') console.error('Login error', err);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+  const logout = async (): Promise<void> => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw mapSupabaseError(error);
+      setUser(null);
+      // clear any app caches here if needed
+      navigate('/');
+    } catch (err: any) {
+      if (process.env.NODE_ENV !== 'production') console.error('Logout error', err);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    return () => subscription.unsubscribe()
-  }, [])
+  const resetPassword = async (email: string): Promise<void> => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin,
+      });
+      if (error) throw mapSupabaseError(error);
+      // nothing else to do; email sent
+    } catch (err: any) {
+      if (process.env.NODE_ENV !== 'production') console.error('Reset password error', err);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const signIn = async (email: string, password: string) => {
-    if (!supabase) throw new Error('Supabase not configured')
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) throw error
+  const value: AuthContextValue = {
+    user,
+    isAuthenticated,
+    isLoading,
+    signup,
+    login,
+    logout,
+    resetPassword,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+function mapSupabaseError(err: any): AuthError {
+  const code = err?.status ? String(err.status) : err?.code ?? null;
+  let message = err?.message ?? 'Authentication error';
+  // map a few common messages
+  if (/invalid password/i.test(message) || /Invalid login credentials/i.test(message)) {
+    message = 'Invalid login credentials';
+  } else if (/duplicate key value violates unique constraint|already registered|already exists/i.test(message)) {
+    message = 'Email already registered';
+  } else if (/too many attempts|rate limit/i.test(message)) {
+    message = 'Rate limit exceeded. Please try again later.';
   }
-
-  const signUp = async (email: string, password: string) => {
-    if (!supabase) throw new Error('Supabase not configured')
-    const { error } = await supabase.auth.signUp({ email, password })
-    if (error) throw error
-  }
-
-  const signOut = async () => {
-    if (!supabase) throw new Error('Supabase not configured')
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
-  }
-
-  const signInWithGithub = async () => {
-    if (!supabase) throw new Error('Supabase not configured')
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'github',
-    })
-    if (error) throw error
-  }
-
-  const signInWithGoogle = async () => {
-    if (!supabase) throw new Error('Supabase not configured')
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-    })
-    if (error) throw error
-  }
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        session,
-        loading,
-        signIn,
-        signUp,
-        signOut,
-        signInWithGithub,
-        signInWithGoogle,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  )
+  return { message, code, status: err?.status ?? null } as AuthError;
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
-}
+export default AuthProvider;
