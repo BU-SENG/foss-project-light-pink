@@ -1,19 +1,15 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const SUPABASE_URL = (import.meta.env && (import.meta.env.VITE_SUPABASE_URL as string)) || process.env.VITE_SUPABASE_URL || '';
+const SUPABASE_ANON_KEY = (import.meta.env && (import.meta.env.VITE_SUPABASE_ANON_KEY as string)) || process.env.VITE_SUPABASE_ANON_KEY || '';
 
-// Allow the app to load without Supabase configured (for demo/testing)
-// Features requiring Supabase will show appropriate messages
-let supabase: ReturnType<typeof createClient> | null = null
-
-if (supabaseUrl && supabaseAnonKey) {
-  supabase = createClient(supabaseUrl, supabaseAnonKey)
-} else {
-  console.warn('⚠️ Supabase not configured. Some features will be disabled.')
-  console.warn(
-    'Create a .env file with VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to enable all features.'
-  )
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  // eslint-disable-next-line no-console
+  console.warn('Supabase env vars not set: VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY');
 }
 
-export { supabase }
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true },
+});
+
+export default supabase;
