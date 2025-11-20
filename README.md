@@ -12,7 +12,6 @@ A modern web application that uses AI to automatically generate high-quality doc
 ## ✨ Features
 
 ### Core Functionality
-
 - 📁 **File Upload**: Drag & drop or browse for `.py`, `.js`, or `.ts` files
 - 🔍 **Smart Parsing**: Automatically detects functions, classes, and methods
 - 🤖 **AI-Powered**: Uses Gemini 2.0 Pro for intelligent docstring generation
@@ -21,7 +20,6 @@ A modern web application that uses AI to automatically generate high-quality doc
 - ⬇️ **Export**: Download your documented code instantly
 
 ### User Features
-
 - 🔐 **Authentication**: Email login with optional GitHub/Google OAuth
 - 📜 **History**: Track and manage previous generations
 - 💾 **Offline Mode**: Works without login using localStorage
@@ -29,7 +27,6 @@ A modern web application that uses AI to automatically generate high-quality doc
 - 🌙 **Dark Mode**: Support for light and dark themes
 
 ### Technical Features
-
 - ⚡ **Fast**: Built with Vite for lightning-fast development
 - 🔒 **Secure**: Row-level security with Supabase
 - 🚀 **Serverless**: Edge functions for scalable AI processing
@@ -47,40 +44,34 @@ A modern web application that uses AI to automatically generate high-quality doc
 ### Installation
 
 1. **Clone the repository**
-
    ```bash
    git clone https://github.com/BU-SENG/foss-project-light-pink.git
    cd foss-project-light-pink
    ```
 
 2. **Install dependencies**
-
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
-
    ```bash
    cp .env.example .env
    ```
-
+   
    Edit `.env` and add your Supabase credentials:
-
    ```env
    VITE_SUPABASE_URL=your_supabase_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
    ```
 
 4. **Set up Supabase** (see detailed guide below)
-
    - Create a new Supabase project
    - Run database migrations
    - Deploy Edge Functions
    - Configure authentication
 
 5. **Start the development server**
-
    ```bash
    npm run dev
    ```
@@ -96,7 +87,6 @@ A modern web application that uses AI to automatically generate high-quality doc
 ## 🏗️ Architecture
 
 ### Frontend Stack
-
 - **React 18** with TypeScript for type safety
 - **Vite** for blazing-fast development and builds
 - **TailwindCSS** for utility-first styling
@@ -105,7 +95,6 @@ A modern web application that uses AI to automatically generate high-quality doc
 - **Lucide Icons** for beautiful, consistent icons
 
 ### Backend Stack
-
 - **Supabase** for:
   - PostgreSQL database
   - Authentication (email, GitHub, Google)
@@ -113,7 +102,6 @@ A modern web application that uses AI to automatically generate high-quality doc
   - Edge Functions (serverless)
 
 ### AI Integration
-
 - **Gemini 2.0 Pro** via Google's Generative AI API
 - Deployed as Supabase Edge Function (Deno runtime)
 - Secure API key storage in Supabase secrets
@@ -167,7 +155,6 @@ foss-project-light-pink/
 ### Example
 
 **Input (Python):**
-
 ```python
 def calculate_average(numbers):
     total = sum(numbers)
@@ -176,18 +163,17 @@ def calculate_average(numbers):
 ```
 
 **Output (Google Style):**
-
 ```python
 def calculate_average(numbers):
     """
     Calculates the average of a list of numbers.
-
+    
     Args:
         numbers: A list of numerical values.
-
+    
     Returns:
         The average of the numbers in the list.
-
+    
     Raises:
         ZeroDivisionError: If the input list is empty.
     """
@@ -207,15 +193,15 @@ def calculate_average(numbers):
 
 ### Environment Variables
 
-| Variable                 | Description                   | Required |
-| ------------------------ | ----------------------------- | -------- |
-| `VITE_SUPABASE_URL`      | Your Supabase project URL     | Yes      |
-| `VITE_SUPABASE_ANON_KEY` | Your Supabase anon/public key | Yes      |
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `VITE_SUPABASE_URL` | Your Supabase project URL | Yes |
+| `VITE_SUPABASE_ANON_KEY` | Your Supabase anon/public key | Yes |
 
 ### Supabase Secrets
 
-| Secret           | Description         | Where to Set              |
-| ---------------- | ------------------- | ------------------------- |
+| Secret | Description | Where to Set |
+|--------|-------------|--------------|
 | `GEMINI_API_KEY` | Your Gemini API key | Supabase CLI or Dashboard |
 
 ## 🚢 Deployment
@@ -225,14 +211,12 @@ def calculate_average(numbers):
 Deploy to any static hosting service:
 
 **Vercel** (Recommended):
-
 ```bash
 npm run build
 vercel deploy
 ```
 
 **Netlify**:
-
 ```bash
 npm run build
 netlify deploy --prod --dir=dist
@@ -241,7 +225,6 @@ netlify deploy --prod --dir=dist
 ### Backend (Supabase)
 
 Your Supabase project is already deployed! Just ensure:
-
 1. Edge Functions are deployed
 2. Database migrations are applied
 3. Environment secrets are set
