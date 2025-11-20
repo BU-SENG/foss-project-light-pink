@@ -7,8 +7,7 @@ import AuthModal from '@/components/AuthModal'
 import { parsePythonCode, parseJavaScriptCode, insertDocstrings } from '@/utils/codeParser'
 import { generateDocstrings, saveToHistory } from '@/services/api'
 import { FunctionMetadata, Language, DocstringFormat } from '@/types'
-import { Download, Sparkles, AlertCircle } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { Download, Sparkles, AlertCircle, CheckCircle, Info, X } from 'lucide-react'
 
 export default function Home() {
   const { user } = useAuth()
@@ -20,15 +19,30 @@ export default function Home() {
   const [modifiedCode, setModifiedCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [infoMessage, setInfoMessage] = useState<string | null>(null)
   const [docFormat, setDocFormat] = useState<DocstringFormat>('google')
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [useOfflineMode, setUseOfflineMode] = useState(false)
+
+  const handleCancelFile = () => {
+    setFile(null)
+    setCode('')
+    setModifiedCode('')
+    setError(null)
+    setSuccessMessage(null)
+    setInfoMessage(null)
+    setGeneratedDocstrings(new Map())
+    setFunctions([])
+  }
 
   const handleFileSelect = (selectedFile: File, content: string) => {
     setFile(selectedFile)
     setCode(content)
     setModifiedCode('')
     setError(null)
+    setSuccessMessage(null)
+    setInfoMessage(null)
     setGeneratedDocstrings(new Map())
 
     // Detect language from file extension
@@ -46,20 +60,13 @@ export default function Home() {
   const handleGenerateDocstrings = async () => {
     if (functions.length === 0) {
       setError('No functions detected in the file.')
-      toast.error('No functions detected in the file.', {
-        duration: 4000,
-        style: {
-          background: 'rgba(239, 68, 68, 0.1)',
-          backdropFilter: 'blur(10px)',
-          color: '#fff',
-          border: '1px solid rgba(239, 68, 68, 0.3)',
-        },
-      })
       return
     }
 
     setLoading(true)
     setError(null)
+    setSuccessMessage(null)
+    setInfoMessage(null)
 
     try {
       const response = await generateDocstrings({
@@ -80,15 +87,7 @@ export default function Home() {
       const updated = insertDocstrings(code, language, response.docstrings)
       setModifiedCode(updated)
 
-      toast.success(`Successfully generated ${response.docstrings.length} docstring${response.docstrings.length > 1 ? 's' : ''}!`, {
-        duration: 3000,
-        style: {
-          background: 'rgba(34, 197, 94, 0.1)',
-          backdropFilter: 'blur(10px)',
-          color: '#fff',
-          border: '1px solid rgba(34, 197, 94, 0.3)',
-        },
-      })
+      setSuccessMessage(`Successfully generated ${response.docstrings.length} docstring${response.docstrings.length > 1 ? 's' : ''}!`)
 
       // Save to history if user is logged in
       if (user && !useOfflineMode) {
@@ -100,26 +99,10 @@ export default function Home() {
             content_before: code,
             content_after: updated,
           })
-          toast.success('Saved to history', {
-            duration: 2000,
-            style: {
-              background: 'rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(10px)',
-              color: '#fff',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-            },
-          })
+          setInfoMessage('Saved to your history')
         } catch (err) {
           console.error('Failed to save history:', err)
-          toast.error('Failed to save to history', {
-            duration: 3000,
-            style: {
-              background: 'rgba(239, 68, 68, 0.1)',
-              backdropFilter: 'blur(10px)',
-              color: '#fff',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-            },
-          })
+          // Don't show error for history save failure
         }
       } else if (!user && !useOfflineMode) {
         // Store in localStorage
@@ -137,15 +120,6 @@ export default function Home() {
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to generate docstrings'
       setError(errorMsg)
-      toast.error(errorMsg, {
-        duration: 5000,
-        style: {
-          background: 'rgba(239, 68, 68, 0.1)',
-          backdropFilter: 'blur(10px)',
-          color: '#fff',
-          border: '1px solid rgba(239, 68, 68, 0.3)',
-        },
-      })
     } finally {
       setLoading(false)
     }
@@ -153,16 +127,6 @@ export default function Home() {
 
   const handleDownload = () => {
     if (!modifiedCode) return
-
-    toast.success('File downloaded!', {
-      duration: 2000,
-      style: {
-        background: 'rgba(34, 197, 94, 0.1)',
-        backdropFilter: 'blur(10px)',
-        color: '#fff',
-        border: '1px solid rgba(34, 197, 94, 0.3)',
-      },
-    })
 
     const blob = new Blob([modifiedCode], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
@@ -199,11 +163,53 @@ export default function Home() {
         </div>
       )}
 
+      {successMessage && (
+        <div className="card border-green-500/50 bg-green-500/10">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start">
+              <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5" />
+              <p className="text-green-300">{successMessage}</p>
+            </div>
+            <button
+              onClick={() => setSuccessMessage(null)}
+              className="text-green-400 hover:text-green-300 transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {infoMessage && (
+        <div className="card border-blue-500/50 bg-blue-500/10">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start">
+              <Info className="h-5 w-5 text-blue-400 mr-3 mt-0.5" />
+              <p className="text-blue-300">{infoMessage}</p>
+            </div>
+            <button
+              onClick={() => setInfoMessage(null)}
+              className="text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="card border-red-500/50 bg-red-500/10">
-          <div className="flex items-start">
-            <AlertCircle className="h-5 w-5 text-red-400 mr-3 mt-0.5" />
-            <p className="text-red-300">{error}</p>
+          <div className="flex items-start justify-between">
+            <div className="flex items-start">
+              <AlertCircle className="h-5 w-5 text-red-400 mr-3 mt-0.5" />
+              <p className="text-red-300">{error}</p>
+            </div>
+            <button
+              onClick={() => setError(null)}
+              className="text-red-400 hover:text-red-300 transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
         </div>
       )}
@@ -216,23 +222,21 @@ export default function Home() {
             <>
               <div className="card">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-white">{file?.name || 'Code Editor'}</h2>
+                  <div className="flex items-center space-x-3">
+                    <h2 className="text-xl font-bold text-white">{file?.name || 'Code Editor'}</h2>
+                    <button
+                      onClick={handleCancelFile}
+                      className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
+                      title="Remove file and start over"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                  </div>
                   <div className="flex items-center space-x-4">
                     <div className="relative">
                       <select
                         value={docFormat}
-                        onChange={(e) => {
-                          setDocFormat(e.target.value as DocstringFormat)
-                          toast.success(`Switched to ${e.target.value === 'google' ? 'Google' : e.target.value === 'numpy' ? 'NumPy' : e.target.value === 'sphinx' ? 'Sphinx' : 'JSDoc'} style`, {
-                            duration: 2000,
-                            style: {
-                              background: 'rgba(255, 255, 255, 0.1)',
-                              backdropFilter: 'blur(10px)',
-                              color: '#fff',
-                              border: '1px solid rgba(255, 255, 255, 0.2)',
-                            },
-                          })
-                        }}
+                        onChange={(e) => setDocFormat(e.target.value as DocstringFormat)}
                         className="appearance-none px-4 py-2.5 pr-10 border border-white/20 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/40 text-white text-sm hover:bg-white/10 transition-all cursor-pointer shadow-lg"
                         style={{
                           backgroundImage: 'none'

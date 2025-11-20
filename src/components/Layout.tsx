@@ -6,7 +6,6 @@ import AuthModal from './AuthModal'
 import { getHistory, deleteHistoryItem } from '@/services/api'
 import { DocgenHistory } from '@/types'
 import CodeEditor from './CodeEditor'
-import toast from 'react-hot-toast'
 
 export default function Layout() {
   const { user, signOut } = useAuth()
@@ -50,26 +49,8 @@ export default function Layout() {
         await deleteHistoryItem(id)
       }
       setHistory((prev) => prev.filter((item) => item.id !== id))
-      toast.success('History item deleted', {
-        duration: 2000,
-        style: {
-          background: 'rgba(34, 197, 94, 0.1)',
-          backdropFilter: 'blur(10px)',
-          color: '#fff',
-          border: '1px solid rgba(34, 197, 94, 0.3)',
-        },
-      })
     } catch (err) {
       console.error('Failed to delete item:', err)
-      toast.error('Failed to delete item', {
-        duration: 3000,
-        style: {
-          background: 'rgba(239, 68, 68, 0.1)',
-          backdropFilter: 'blur(10px)',
-          color: '#fff',
-          border: '1px solid rgba(239, 68, 68, 0.3)',
-        },
-      })
     }
   }
 
@@ -88,15 +69,6 @@ export default function Layout() {
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
-    toast.success(`Downloaded ${item.filename}`, {
-      duration: 2000,
-      style: {
-        background: 'rgba(34, 197, 94, 0.1)',
-        backdropFilter: 'blur(10px)',
-        color: '#fff',
-        border: '1px solid rgba(34, 197, 94, 0.3)',
-      },
-    })
   }
 
   return (
