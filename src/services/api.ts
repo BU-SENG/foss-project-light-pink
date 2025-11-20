@@ -1,14 +1,17 @@
-import { supabase } from '@/lib/supabase'
+import { supabase as supabaseClient } from '@/lib/supabase'
 import { GenerateDocstringRequest, GenerateDocstringResponse, DocgenHistory } from '@/types'
+
+function getSupabase() {
+  if (!supabaseClient) {
+    throw new Error('Supabase not configured')
+  }
+  return supabaseClient
+}
 
 export async function generateDocstrings(
   request: GenerateDocstringRequest
 ): Promise<GenerateDocstringResponse> {
-  if (!supabase) {
-    throw new Error(
-      'Supabase not configured. Please set up your .env file with Supabase credentials.'
-    )
-  }
+  const supabase = getSupabase()
 
   const { data, error } = await supabase.functions.invoke('generate-docstring', {
     body: request,
@@ -22,11 +25,13 @@ export async function generateDocstrings(
 }
 
 export async function saveToHistory(history: Omit<DocgenHistory, 'id' | 'created_at'>) {
-  if (!supabase) {
-    throw new Error('Supabase not configured')
-  }
+  const supabase = getSupabase()
 
-  const { data, error } = await supabase.from('docgen_history').insert([history]).select().single()
+  const { data, error } = await supabase
+    .from('docgen_history')
+    .insert([history as any])
+    .select()
+    .single()
 
   if (error) {
     throw new Error(`Failed to save history: ${error.message}`)
@@ -36,9 +41,7 @@ export async function saveToHistory(history: Omit<DocgenHistory, 'id' | 'created
 }
 
 export async function getHistory(userId: string): Promise<DocgenHistory[]> {
-  if (!supabase) {
-    throw new Error('Supabase not configured')
-  }
+  const supabase = getSupabase()
 
   const { data, error } = await supabase
     .from('docgen_history')
@@ -54,9 +57,7 @@ export async function getHistory(userId: string): Promise<DocgenHistory[]> {
 }
 
 export async function deleteHistoryItem(id: string) {
-  if (!supabase) {
-    throw new Error('Supabase not configured')
-  }
+  const supabase = getSupabase()
 
   const { error } = await supabase.from('docgen_history').delete().eq('id', id)
 

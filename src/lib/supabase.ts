@@ -1,14 +1,15 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from '@/types/database'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 // Allow the app to load without Supabase configured (for demo/testing)
 // Features requiring Supabase will show appropriate messages
-let supabase: ReturnType<typeof createClient> | null = null
+let supabase: SupabaseClient<Database> | null = null
 
 if (supabaseUrl && supabaseAnonKey) {
-  supabase = createClient(supabaseUrl, supabaseAnonKey)
+  supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
 } else {
   console.warn('⚠️ Supabase not configured. Some features will be disabled.')
   console.warn(
