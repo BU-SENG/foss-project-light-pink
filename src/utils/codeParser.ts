@@ -110,7 +110,6 @@ export function parseJavaScriptCode(code: string): FunctionMetadata[] {
   // Regex patterns
   const funcPattern = /^\s*(export\s+)?(async\s+)?function\s+(\w+)\s*\((.*?)\)/
   const arrowPattern = /^\s*(export\s+)?(const|let|var)\s+(\w+)\s*=\s*(async\s*)?\((.*?)\)\s*=>/
-  const methodPattern = /^\s*(async\s+)?(\w+)\s*\((.*?)\)\s*{/
   const classPattern = /^\s*(export\s+)?class\s+(\w+)/
   const jsDocPattern = /\/\*\*([\s\S]*?)\*\//
   
@@ -333,11 +332,9 @@ export function insertDocstrings(
       
       // Check if there's already a JSDoc comment before the function
       let insertLine = func.startLine
-      let hasExistingDoc = false
       
       for (let j = func.startLine - 1; j >= Math.max(0, func.startLine - 10); j--) {
         if (lines[j].trim().includes('*/')) {
-          hasExistingDoc = true
           // Remove existing JSDoc
           let k = j
           while (k >= 0 && !lines[k].trim().includes('/**')) {

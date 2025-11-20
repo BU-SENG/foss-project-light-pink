@@ -26,7 +26,7 @@ export async function saveToHistory(history: Omit<DocgenHistory, 'id' | 'created
     throw new Error('Supabase not configured')
   }
 
-  const { data, error } = await supabase.from('docgen_history').insert(history).select().single()
+  const { data, error } = await supabase.from('docgen_history').insert([history]).select().single()
 
   if (error) {
     throw new Error(`Failed to save history: ${error.message}`)

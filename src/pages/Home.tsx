@@ -23,7 +23,6 @@ export default function Home() {
   const [infoMessage, setInfoMessage] = useState<string | null>(null)
   const [docFormat, setDocFormat] = useState<DocstringFormat>('google')
   const [showAuthModal, setShowAuthModal] = useState(false)
-  const [useOfflineMode, setUseOfflineMode] = useState(false)
 
   const handleCancelFile = () => {
     setFile(null)
@@ -90,7 +89,7 @@ export default function Home() {
       setSuccessMessage(`Successfully generated ${response.docstrings.length} docstring${response.docstrings.length > 1 ? 's' : ''}!`)
 
       // Save to history if user is logged in
-      if (user && !useOfflineMode) {
+      if (user) {
         try {
           await saveToHistory({
             user_id: user.id,
@@ -104,7 +103,7 @@ export default function Home() {
           console.error('Failed to save history:', err)
           // Don't show error for history save failure
         }
-      } else if (!user && !useOfflineMode) {
+      } else if (!user) {
         // Store in localStorage
         const history = JSON.parse(localStorage.getItem('docgen_history') || '[]')
         history.unshift({

@@ -1,4 +1,4 @@
-import { Outlet, Link, useNavigate } from 'react-router-dom'
+import { Outlet, Link } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { FileCode2, Menu, X, LogOut, LogIn, Trash2, Eye, Download, Calendar, History as HistoryIcon } from 'lucide-react'
 import { useState, useEffect } from 'react'
@@ -9,7 +9,6 @@ import CodeEditor from './CodeEditor'
 
 export default function Layout() {
   const { user, signOut } = useAuth()
-  const navigate = useNavigate()
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [history, setHistory] = useState<DocgenHistory[]>([])
